@@ -26,6 +26,7 @@ vars: # 全局变量
   service:
     name: "web-framework-ixuf"
     description: 'Serverless Devs Web Framework Service'
+    role: acs:ram::1740298130743624:role/AliyunFcDefaultRole
 
 services:
   framework: # 业务名称/模块名称
