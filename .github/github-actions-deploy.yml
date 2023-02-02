@@ -1,0 +1,41 @@
+name: GitHub Actions Deploy
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+      - run: echo "🍏 This job's status is ${{ job.status }}."
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "14"
+      # - name: check node version
+      #   run: |
+      #     node -v
+      - name: Install serverless tool
+        run: |
+          npm install @serverless-devs/s@2.1.1 -g
+      - name: Login serverless
+        run: |
+          s config add -f -a default --keyList AccountID,AccessKeyID,AccessKeySecret --infoList ${{ secrets.ALIBABA_CLOUD_ACCOUNT_ID}},${{ secrets.ALIBABA_CLOUD_ACCESS_KEY_ID}},${{ secrets.ALIBABA_CLOUD_ACCESS_KEY_SECRET}}
+      - name: Deploy aliyun FC
+        run: |
+          s deploy -t s.yml --use-local -a default
+      - run: echo "🍏 Done. ${{ job.status }}."
